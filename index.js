@@ -11,28 +11,6 @@ server.listen(port, function(){
 });
 app.use(express.static('public'));
 
-io.of("/").adapter.on("create-room", (room) => {
-  console.log(`room ${room} was created`);
-});
-io.of("/").adapter.on("join-room", (room, id) => {
-  console.log(`socket ${id} has joined room ${room}`);
-  //io.emit('rooms', `socket ${id} has joined room ${room}`)
-
-});
-
-
-io.of("room-1").adapter.on("join-room", (room, id) => {
-  console.log(`socket ${id} has joined room ${room}`);
-  io.emit('rooms', `socket ${id} has joined room ${room}`)
-});
-
-io.of("*").adapter.on(
-  "create-room", (room) => {
-    console.log(`room ${room} was created`);
-    io.emit("rooms", {new : room})
-  });
-
-
   io.on('connection', function (socket) {
     socket.join("room-"+roomno);
     //Send this event to everyone in the room.
@@ -85,18 +63,33 @@ io.of("*").adapter.on(
     });
   });
 
+  io.of("/").adapter.on("create-room", (room) => {
+    console.log(`room ${room} was created`);
+  });
+  io.of("/").adapter.on("join-room", (room, id) => {
+    console.log(`socket ${id} has joined room ${room}`);
+    //io.emit('rooms', `socket ${id} has joined room ${room}`)
+
+  });
+
+
+  io.of("room-1").adapter.on("join-room", (room, id) => {
+    console.log(`socket ${id} has joined room ${room}`);
+    io.emit('rooms', `socket ${id} has joined room ${room}`)
+  });
+
   function findRooms() {
     var availableRooms = [];
     var rooms = io.sockets.adapter.rooms;
-    console.log("rrrr", rooms)
+    // console.log("rrrr", rooms)
     for (let [key, value] of rooms) {
-      console.log(key + " = " + value);
+      // console.log(key + " = " + value);
       let users = []
       const clients = io.sockets.adapter.rooms.get(key);
-      console.log(clients)
+      // console.log(clients)
       // let socks = []
       for (let c of clients) {
-        console.log('----------'+c);
+        // console.log('----------'+c);
         users.push(c)
       }
 
@@ -109,6 +102,6 @@ io.of("*").adapter.on(
     //         }
     //     }
     // }
-    console.log("roorrrrr",availableRooms)
+    console.log("rooms",availableRooms)
     return availableRooms;
   }
