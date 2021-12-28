@@ -1,17 +1,55 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <script src="socket.io/socket.io.min.js"></script>
-    <script>
-      var socket = io.connect(window.location.origin);
-      socket.on('connect', function () {
-        console.log('connection');
+<head>
+  <script src="socket.io/socket.io.min.js"></script>
+  <script>
+    var socket = io.connect(window.location.origin);
+    socket.on('connect', function () {
+      console.log('connection');
+    });
+    socket.on('message', function (data) {
+      console.log(data.msg);
+    });
+    socket.on('rooms', function (data) {
+
+      console.log(data);
+      let roomList = document.getElementById("rooms")
+      roomList.innerHTML = ""
+
+      data.forEach((item, i) => {
+        console.log(item)
+        let li = document.createElement('li')
+        li.innerHTML = JSON.stringify(item)
+        let btn = document.createElement("button")
+        btn.innerHTML = "Join"
+        btn.setAttribute("room" , item.key)
+        btn.addEventListener("click", function(e){
+          console.log(e.target.getAttribute("room"))
+
+        })
+        li.append(btn)
+        roomList.append(li)
       });
-      socket.on('message', function (data) {
-        console.log(data.msg);
-      });
-    </script>
-  </head>
-  <body>
-  </body>
+
+    });
+    socket.on('connectToRoom',function(data){
+      console.log("connect to room",data)
+    });
+  </script>
+</head>
+<body>
+  <button onclick="createRoom()">Create Room</button>
+  <ul id="rooms">
+
+  </ul>
+</body>
+<script>
+  function createRoom(){
+    console.log("create")
+
+    socket.emit("create", {creator: socket.id, name: new Date()})
+    socket.emit("getRooms")
+  }
+
+</script>
 </html>
