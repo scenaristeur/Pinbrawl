@@ -9,5 +9,5 @@ npx http-server -c-1
 
 # todo
 - [ ] update to last p5play
-- [ ] touch for mobile
-- [ ] socket.io for mobile multiplayer
+- [ X ] touch for mobile
+- [ ] socket.io for mobile multiplayer https://github.com/antiboredom/websocket-p5

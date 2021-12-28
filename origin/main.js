@@ -160,18 +160,6 @@ function draw() {
   }
 }
 
-
-function touchStarted() {
-  let value  = 12
-  if (value === 0) {
-    value = 255;
-  } else {
-    value = 0;
-  }
-  console.log(value)
-}
-
-
 function keyPressed() {
   if (key == 'a' || key == 'w') {
     if (state == "2player" || state == "1player") {

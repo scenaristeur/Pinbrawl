@@ -1,0 +1,23 @@
+{
+  "name": "pinball-fight",
+  "version": "1.0.0",
+  "description": "- 2 players p5js pinball from https://github.com/autoelk/Pinbrawl",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/scenaristeur/Pinbrawl.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/scenaristeur/Pinbrawl/issues"
+  },
+  "homepage": "https://github.com/scenaristeur/Pinbrawl#readme",
+  "dependencies": {
+    "express": "^4.17.2",
+    "socket.io": "^4.4.0"
+  }
+}
