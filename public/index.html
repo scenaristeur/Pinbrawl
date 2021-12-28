@@ -21,50 +21,65 @@
   </style>
   <script src="p5/p5.min.js"></script>
   <!-- <script src="../addons/p5.sound.js"></script> -->
-  <script src="sketch.js"></script>
+
+  <!-- <script src="sketch.js"></script> -->
+    <script src='origin/p5.play.js'></script>
+  <script src="origin/main.js"></script>
+  <!-- Add modules here: <script src='modules/filename.js'></script> -->
+  <script src='origin/paddle.js'></script>
+  <script src='origin/ball.js'></script>
+  <script src='origin/wall.js'></script>
+  <script src='origin/obstacle.js'></script>
+
   <script src="socket.io/socket.io.min.js"></script>
   <script>
-    var socket = io.connect(window.location.origin);
-    socket.on('connect', function () {
-      console.log('connection');
-    });
-    socket.on('message', function (data) {
-      console.log(data.msg);
-    });
-    socket.on('rooms', function (data) {
-      let profileDiv = document.getElementById("profile")
-      console.log(data);
-      let roomList = document.getElementById("rooms")
-      roomList.innerHTML = ""
+  var socket = io.connect(window.location.origin);
+  socket.on('connect', function () {
+    console.log('connection');
+  });
+  socket.on('message', function (data) {
+    console.log(data.msg);
+  });
+  socket.on('action', function (data) {
+    console.log(data);
+    let actionDiv = document.getElementById("action")
+    actionDiv.innerHTML = JSON.stringify(data)
+  });
+  socket.on('rooms', function (data) {
+    let profileDiv = document.getElementById("profile")
+    console.log(data);
+    let roomList = document.getElementById("rooms")
+    roomList.innerHTML = ""
 
-      data.forEach((item, i) => {
-        console.log(item)
-        if(item.key != socket.id){
-          let li = document.createElement('li')
-          li.innerHTML = JSON.stringify(item)
-          let btn = document.createElement("button")
-          btn.innerHTML = item.users.length <2 ? "Join" : "See"
-          btn.setAttribute("room" , item.key)
-          btn.addEventListener("click", function(e){
-            let room = e.target.getAttribute("room")
-            console.log(e.target.getAttribute("room"))
-            socket.emit('joinRoom', room)
-          })
-          li.append(btn)
-          roomList.append(li)
-        }else{
-          profileDiv.innerHTML = "Me : "+item.key
-        }
-      });
+    data.forEach((item, i) => {
+      console.log(item)
+      if(item.key != socket.id){
+        let li = document.createElement('li')
+        li.innerHTML = JSON.stringify(item)
+        let btn = document.createElement("button")
+        btn.innerHTML = item.users.length <2 ? "Join" : "See"
+        btn.setAttribute("room" , item.key)
+        btn.addEventListener("click", function(e){
+          let room = e.target.getAttribute("room")
+          console.log(e.target.getAttribute("room"))
+          socket.emit('joinRoom', room)
+        })
+        li.append(btn)
+        roomList.append(li)
+      }else{
+        profileDiv.innerHTML = "Me : "+item.key
+      }
+    });
 
-    });
-    socket.on('connectToRoom',function(data){
-      console.log("connect to room",data)
-    });
+  });
+  socket.on('connectToRoom',function(data){
+    console.log("connect to room",data)
+  });
   </script>
 </head>
 <body>
   <button onclick="createRoom()">Create Room</button>
+    <div id="action">action</div>
   <div id="profile">profil</div>
   <ul id="rooms">
 
@@ -76,12 +91,12 @@
 
 </body>
 <script>
-  function createRoom(){
-    console.log("create")
+function createRoom(){
+  console.log("create")
 
-    socket.emit("create", {creator: socket.id, name: new Date()})
-    socket.emit("getRooms")
-  }
+  socket.emit("create", {creator: socket.id, name: new Date()})
+  socket.emit("getRooms")
+}
 
 </script>
 </html>
