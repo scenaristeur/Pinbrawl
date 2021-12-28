@@ -11,24 +11,29 @@
       console.log(data.msg);
     });
     socket.on('rooms', function (data) {
-
+      let profileDiv = document.getElementById("profile")
       console.log(data);
       let roomList = document.getElementById("rooms")
       roomList.innerHTML = ""
 
       data.forEach((item, i) => {
         console.log(item)
-        let li = document.createElement('li')
-        li.innerHTML = JSON.stringify(item)
-        let btn = document.createElement("button")
-        btn.innerHTML = "Join"
-        btn.setAttribute("room" , item.key)
-        btn.addEventListener("click", function(e){
-          console.log(e.target.getAttribute("room"))
-
-        })
-        li.append(btn)
-        roomList.append(li)
+        if(item.key != socket.id){
+          let li = document.createElement('li')
+          li.innerHTML = JSON.stringify(item)
+          let btn = document.createElement("button")
+          btn.innerHTML = item.users.length <2 ? "Join" : "See"
+          btn.setAttribute("room" , item.key)
+          btn.addEventListener("click", function(e){
+            let room = e.target.getAttribute("room")
+            console.log(e.target.getAttribute("room"))
+            socket.emit('joinRoom', room)
+          })
+          li.append(btn)
+          roomList.append(li)
+        }else{
+          profileDiv.innerHTML = "Me : "+item.key
+        }
       });
 
     });
@@ -39,6 +44,7 @@
 </head>
 <body>
   <button onclick="createRoom()">Create Room</button>
+  <div id="profile">profil</div>
   <ul id="rooms">
 
   </ul>

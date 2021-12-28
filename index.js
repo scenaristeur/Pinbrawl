@@ -16,6 +16,8 @@ io.of("/").adapter.on("create-room", (room) => {
 });
 io.of("/").adapter.on("join-room", (room, id) => {
   console.log(`socket ${id} has joined room ${room}`);
+  //io.emit('rooms', `socket ${id} has joined room ${room}`)
+
 });
 
 
@@ -58,6 +60,12 @@ io.of("*").adapter.on(
       //  console.log(io)
       //  socket.broadcast.emit('message', data);
     });
+    socket.on('joinRoom', function(data){
+      socket.join(data);
+      let rooms = findRooms()
+      console.log(rooms)
+      io.emit('rooms', rooms)
+    })
     // socket.on('getRooms', function() {
     //   //let rooms io.sockets.adapter.rooms
     //     let rooms_ids = Object.keys(io.sockets.adapter.rooms)
@@ -83,12 +91,16 @@ io.of("*").adapter.on(
     console.log("rrrr", rooms)
     for (let [key, value] of rooms) {
       console.log(key + " = " + value);
+      let users = []
+      const clients = io.sockets.adapter.rooms.get(key);
+      console.log(clients)
       // let socks = []
-      // for (let [keyS, valueS] of value) {
-      //   console.log('----------'+keyS + " = " + valueS);
-      // }
+      for (let c of clients) {
+        console.log('----------'+c);
+        users.push(c)
+      }
 
-      availableRooms.push({key: key, value: value.entries(), length: value.length});
+      availableRooms.push({key: key, users: users});
     }
     // if (rooms) {
     //     for (var room in rooms) {
