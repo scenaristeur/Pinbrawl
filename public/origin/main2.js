@@ -27,7 +27,6 @@ function preload() {
   paddleImage = loadImage('origin/assets/paddle.png');
   wallImage = loadImage('origin/assets/wall.png');
   ballImage = loadImage('origin/assets/ball.png');
-  ball2Image = loadImage('origin/assets/ball2.png');
   endScreenImage1 = loadImage('origin/assets/p1Wins.png');
   endScreenImage2 = loadImage('origin/assets/p2Wins.png');
   arrowImage = loadImage('origin/assets/arrow.png');
@@ -52,24 +51,32 @@ function setup() {
   // song.setVolume(0.5);
   // song.loop();
 
-  state = "menu" //used to tell when the game is over
+  setState("2player") //used to tell when the game is over
 
-  ball = new Ball(ballImage);
-  ball2 = new Ball(ball2Image);
-
-  paddle1 = new Paddle(50, 150, -60, -120, -1, 1, -1);
-  paddle2 = new Paddle(50, 300, 60, 120, 1, 1, 1);
+  ball = new Ball();
+  paddle1 = new Paddle(width/2-75, height-20, -170, -210, -1, 1, -1);
+  paddle2 = new Paddle(width/2+75, height-20, -10, 30, 1, 1, 1);
   paddle3 = new Paddle(750, 150, 240, 300, 1, 1, 1);
   paddle4 = new Paddle(750, 300, -240, -300, -1, 1, -1);
+  // paddle1 = new Paddle(50, 150, -60, -120, -1, 1, -1);
+  // paddle2 = new Paddle(50, 300, 60, 120, 1, 1, 1);
+  // paddle3 = new Paddle(750, 150, 240, 300, 1, 1, 1);
+  // paddle4 = new Paddle(750, 300, -240, -300, -1, 1, -1);
 
   walls = new Group();
   walls_list = [
-    new Wall(108, 50, 225, 30, -60),
+    new Wall(108, 200, 400, 30, -90),
     new Wall(108, 400, 225, 30, 60),
     new Wall(692, 50, 225, 30, 60),
     new Wall(692, 400, 225, 30, -60),
     new Wall(width / 2, -25, width, 50, 0),
     new Wall(width / 2, height + 25, width, 50, 0),
+    // new Wall(108, 50, 225, 30, -60),
+    // new Wall(108, 400, 225, 30, 60),
+    // new Wall(692, 50, 225, 30, 60),
+    // new Wall(692, 400, 225, 30, -60),
+    // new Wall(width / 2, -25, width, 50, 0),
+    // new Wall(width / 2, height + 25, width, 50, 0),
   ]
 
   obstacles = new Group();
@@ -80,7 +87,14 @@ function setup() {
     new Obstacle(5, smallCircleImage, "circle", 250, 325, 25),
     new Obstacle(5, smallCircleImage, "circle", 550, 125, 25),
     new Obstacle(25, sideCircleImage, "circle", 400, -10, 50),
-    new Obstacle(25, sideCircleImage, "circle", 400, 460, 50),
+    new Obstacle(25, sideCircleImage, "circle", 108, 50, 50),
+    // new Obstacle(5, rectangleBumperImage, "rect", 250, 125, 50, 100, 50),
+    // new Obstacle(5, rectangleBumperImage, "rect", 550, 325, 50, 100, 50),
+    // new Obstacle(10, middleCircleImage, "circle", 400, 225, 50),
+    // new Obstacle(5, smallCircleImage, "circle", 250, 325, 25),
+    // new Obstacle(5, smallCircleImage, "circle", 550, 125, 25),
+    // new Obstacle(25, sideCircleImage, "circle", 400, -10, 50),
+    // new Obstacle(25, sideCircleImage, "circle", 400, 460, 50),
   ];
 }
 
@@ -91,8 +105,6 @@ function draw() {
 
   if (state != "game over") {
     ball.update();
-    ball2.update();
-   socket.emit("ball",{x: ball.sprite.x, y: ball.sprite.y})
   }
 
   // bot controls
@@ -172,10 +184,22 @@ function draw() {
   }
 
   if (state != "game over" && state != "menu" && (leftScore >= 999) || (rightScore >= 999)) {
-    state = "game over";
+    setState("game over")
   }
   if (state == "game over") {
     endScreen();
+  }
+}
+
+function setState(_state){
+  state = _state
+
+  switch (state) {
+    case "game over":
+
+    break;
+    default:
+
   }
 }
 
@@ -249,11 +273,11 @@ function keyPressed() {
   if (keyCode == ENTER) {
     // change game state based on menu selection
     if (state == "menu") {
-      state = menu[menuSelection];
+      setState(menu[menuSelection]);
       resetgame();
     }
     if (state == "game over") {
-      state = "menu";
+      setState("menu");
       resetgame();
     }
   }

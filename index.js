@@ -48,6 +48,10 @@ io.on('connection', function (socket) {
     console.log("action", data)
     io.emit('action', data)
   })
+  socket.on('ball', function(data){
+    console.log("ball", data)
+    socket.broadcast.emit('ball', data)
+  })
   // socket.on('getRooms', function() {
   //   //let rooms io.sockets.adapter.rooms
   //     let rooms_ids = Object.keys(io.sockets.adapter.rooms)

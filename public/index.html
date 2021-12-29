@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
-  <title>p5.js example q</title>
+  <title>pinball fight</title>
   <style>
   * {
     /*https://stackoverflow.com/questions/10614481/disable-double-tap-zoom-option-in-browser-on-touch-devices*/
@@ -20,11 +20,13 @@
 
   </style>
   <script src="p5/p5.min.js"></script>
-  <!-- <script src="../addons/p5.sound.js"></script> -->
+  <!-- <script src="p5/p5.sound.min.js"></script> -->
 
   <!-- <script src="sketch.js"></script> -->
-    <script src='origin/p5.play.js'></script>
+  <script src='origin/p5.play.js'></script>
   <script src="origin/main.js"></script>
+
+  <!-- <script src="origin/main1.js"></script> -->
   <!-- Add modules here: <script src='modules/filename.js'></script> -->
   <script src='origin/paddle.js'></script>
   <script src='origin/ball.js'></script>
@@ -75,11 +77,16 @@
   socket.on('connectToRoom',function(data){
     console.log("connect to room",data)
   });
+  socket.on('ball',function(data){
+    document.getElementById('ball').innerHTML = JSON.stringify(data)
+    ball2.sprite.x = data.x
+    ball2.sprite.y = data.y
+  });
   </script>
 </head>
 <body>
   <button onclick="createRoom()">Create Room</button>
-    <div id="action">action</div>
+  <div id="action">action</div>
   <div id="profile">profil</div>
   <ul id="rooms">
 
@@ -87,6 +94,7 @@
 
   <main>
   </main>
+  <div id="ball"> DEBUG</div>
   <div id="debug"> DEBUG</div>
 
 </body>
