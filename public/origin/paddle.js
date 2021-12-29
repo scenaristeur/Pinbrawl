@@ -19,6 +19,7 @@ function Paddle(x, y, startRotation, swingRotation, direction, mirrorX, mirrorY)
   this.swinging = false;
   this.direction = direction;
   this.speed = 10;
+  this.sprite.debug = true
 
   // print(this.sprite.x + " " + this.sprite.y + " " + this.direction);
 }

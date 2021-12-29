@@ -6,7 +6,7 @@ function Ball(image) {
   this.sprite.maxSpeed = MAX_SPEED;
   this.sprite.friction = 0.02;
   this.sprite.restitution = 0.4;
-  // this.sprite.debug = true;
+  this.sprite.debug = true;
 
   this.score = 5;
 }

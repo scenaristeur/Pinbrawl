@@ -1,5 +1,6 @@
 function Obstacle(score, image, shape, x, y, width, height = 0, rotation = 0) {
   this.sprite = createSprite(x, y);
+  this.sprite.debug = true
   if (shape == "circle") {
     this.sprite.setCollider("circle", 0, 0, width);
     // this.sprite.draw = function () { ellipse(0, 0, width * 2, width * 2) };
@@ -13,7 +14,7 @@ function Obstacle(score, image, shape, x, y, width, height = 0, rotation = 0) {
   this.sprite.immovable = true;
   this.sprite.restitution = 5; // extra bounciness
   // this.sprite.debug = true;
-  
+
   this.score = score;
   obstacles.add(this.sprite);
 }

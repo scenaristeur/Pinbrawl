@@ -113,12 +113,22 @@ function draw() {
     paddle4.update();
 
     ball.sprite.bounce(walls);
+    ball2.sprite.bounce(walls);
 
     ball.sprite.bounce(obstacles, function (pinball, obstacle) {
       // find the specific obstacle that was hit
       for (let i = 0; i < obstacles_list.length; i++) {
         if (obstacle == obstacles_list[i].sprite) {
           ball.score += obstacles_list[i].score;
+        }
+      }
+    })
+
+    ball2.sprite.bounce(obstacles, function (pinball, obstacle) {
+      // find the specific obstacle that was hit
+      for (let i = 0; i < obstacles_list.length; i++) {
+        if (obstacle == obstacles_list[i].sprite) {
+          ball2.score += obstacles_list[i].score;
         }
       }
     })
@@ -134,6 +144,7 @@ function draw() {
     text(rightScore, width - 16, 40);
     textAlign(CENTER, CENTER);
     text(ball.score, width / 2, height / 2 - 4);
+      text(ball2.score, width / 2, height / 2 + 4);
   }
 
   if (state == "menu") {
@@ -176,6 +187,8 @@ function draw() {
   }
   if (state == "game over") {
     endScreen();
+    ball.desroy()
+    ball2.destroy()
   }
 }
 
@@ -318,6 +331,7 @@ function resetgame() {
   menuSelection = 0;
   background(bg);
   ball.reset(); // doesn't work TODO make ball reset
+  ball2.reset()
 }
 
 
