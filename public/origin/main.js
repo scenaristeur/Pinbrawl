@@ -41,12 +41,21 @@ function preload() {
 
 // Runs once before draw()
 function setup() {
-  width = 800 //2*windowWidth / 3 //800 // windowWidth
-  height = 450//2*windowHeight / 3 //450 // windowHeight/2
+  if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+    document.getElementById("debug").innerHTML = "mobile"
+    width = windowWidth //800 // windowWidth
+    height = windowHeight  //450 // windowHeight/2
+  }else{
+    document.getElementById("debug").innerHTML = "pc"
+    width = 450 //2*windowWidth / 3 //800 // windowWidth
+    height = windowHeight  //450 // windowHeight/2
+  }
+  // width = 800 //2*windowWidth / 3 //800 // windowWidth
+  // height = 450//2*windowHeight / 3 //450 // windowHeight/2
   cnv = createCanvas(width, height); //createCanvas(100, 100);
   cnv.touchStarted(changeGray); // attach listener for
   // canvas click only
-  cnv.mouseClicked(changeGray);
+  //cnv.mouseClicked(changeGray);
   d = 10;
   g = 100;
   // song.setVolume(0.5);
@@ -92,7 +101,7 @@ function draw() {
   if (state != "game over") {
     ball.update();
     ball2.update();
-   socket.emit("ball",{x: ball.sprite.x, y: ball.sprite.y})
+    socket.emit("ball",{x: ball.sprite.x, y: ball.sprite.y})
   }
 
   // bot controls
@@ -144,7 +153,7 @@ function draw() {
     text(rightScore, width - 16, 40);
     textAlign(CENTER, CENTER);
     text(ball.score, width / 2, height / 2 - 4);
-      text(ball2.score, width / 2, height / 2 + 4);
+    text(ball2.score, width / 2, height / 2 + 4);
   }
 
   if (state == "menu") {
@@ -155,9 +164,12 @@ function draw() {
     textAlign(CENTER);
     text("PINBRAWL", width / 2, 100);
     // menu elements
-    textSize(40);
+    textSize(10);
     for (let i = 0; i < menu.length; i++) {
-      text(menu[i], width / 2, 200 + 50 * i);
+      //text(menu[i], width / 2, 200 + 50 * i);
+      let button = createButton(menu[i]);
+      button.position(width / 2, 200 + 50 * i);
+      button.mousePressed(btnClicked);
     }
     image(arrowImage, 530, 185 + 50 * menuSelection); // arrowDownImage
 
@@ -192,6 +204,10 @@ function draw() {
   }
 }
 
+
+function btnClicked(b){
+  console.log(b)
+}
 function keyPressed() {
   console.log("socket.id", socket.id)
   socket.emit('action',{actor: socket.id, key: key})

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+  <title>pinball fight</title>
+  <style>
+  * {
+    /*https://stackoverflow.com/questions/10614481/disable-double-tap-zoom-option-in-browser-on-touch-devices*/
+    touch-action: manipulation;
+  }
+  body {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+  }
+
+  </style>
+  <script src="p5/p5.min.js"></script>
+  <!-- <script src="p5/p5.sound.min.js"></script> -->
+
+  <!-- <script src="sketch.js"></script> -->
+  <script src='origin/p5.play.js'></script>
+  <script src="origin/main.js"></script>
+
+  <!-- <script src="origin/main1.js"></script> -->
+  <!-- Add modules here: <script src='modules/filename.js'></script> -->
+  <script src='origin/paddle.js'></script>
+  <script src='origin/ball.js'></script>
+  <script src='origin/wall.js'></script>
+  <script src='origin/obstacle.js'></script>
+
+  <script src="socket.io/socket.io.min.js"></script>
+  <script>
+  var socket = io.connect(window.location.origin);
+  socket.on('connect', function () {
+    console.log('connection');
+  });
+  socket.on('message', function (data) {
+    console.log(data.msg);
+  });
+  socket.on('action', function (data) {
+    console.log(data);
+    let actionDiv = document.getElementById("action")
+    actionDiv.innerHTML = JSON.stringify(data)
+  });
+  socket.on('rooms', function (data) {
+    let profileDiv = document.getElementById("profile")
+    console.log(data);
+    let roomList = document.getElementById("rooms")
+    roomList.innerHTML = ""
+
+    data.forEach((item, i) => {
+      console.log(item)
+      if(item.key != socket.id){
+        let li = document.createElement('li')
+        li.innerHTML = JSON.stringify(item)
+        let btn = document.createElement("button")
+        btn.innerHTML = item.users.length <2 ? "Join" : "See"
+        btn.setAttribute("room" , item.key)
+        btn.addEventListener("click", function(e){
+          let room = e.target.getAttribute("room")
+          console.log(e.target.getAttribute("room"))
+          socket.emit('joinRoom', room)
+        })
+        li.append(btn)
+        roomList.append(li)
+      }else{
+        profileDiv.innerHTML = "Me : "+item.key
+      }
+    });
+
+  });
+  socket.on('connectToRoom',function(data){
+    console.log("connect to room",data)
+  });
+  socket.on('ball',function(data){
+    document.getElementById('ball').innerHTML = JSON.stringify(data)
+    ball2.sprite.x = data.x
+    ball2.sprite.y = data.y
+  });
+  </script>
+</head>
+<body>
+  <button onclick="createRoom()">Create Room</button>
+  <div id="action">action</div>
+  <div id="profile">profil</div>
+  <ul id="rooms">
+
+  </ul>
+
+  <main>
+  </main>
+  <div id="ball"> DEBUG</div>
+  <div id="debug"> DEBUG</div>
+
+</body>
+<script>
+function createRoom(){
+  console.log("create")
+
+  socket.emit("create", {creator: socket.id, name: new Date()})
+  socket.emit("getRooms")
+}
+
+</script>
+</html>

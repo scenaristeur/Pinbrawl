@@ -49,7 +49,7 @@ io.on('connection', function (socket) {
     io.emit('action', data)
   })
   socket.on('ball', function(data){
-    console.log("ball", data)
+  //  console.log("ball", data)
     socket.broadcast.emit('ball', data)
   })
   // socket.on('getRooms', function() {
