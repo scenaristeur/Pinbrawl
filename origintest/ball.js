@@ -4,7 +4,7 @@ function Ball() {
   this.sprite.addImage(ballImage);
   this.sprite.setCollider("circle", 0, 0, 8);
   this.sprite.maxSpeed = MAX_SPEED;
-  this.sprite.friction = 0.02;
+  this.sprite.friction = 0.005 //0.02;
   this.sprite.restitution = 0.4;
    this.sprite.debug = true;
 
