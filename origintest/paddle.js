@@ -4,6 +4,7 @@ function Paddle(x, y, startRotation, swingRotation, direction, mirrorX, mirrorY)
   this.sprite.addImage(paddleImage);
   this.sprite.mirrorX(mirrorX);
   this.sprite.mirrorY(mirrorY);
+  // this.sprite.scale = 0.75
   this.sprite.setCollider("rectangle", 0, 0, 100, 30);
   this.sprite.rotation = startRotation;
   this.sprite.immovable = true;
@@ -69,24 +70,24 @@ Paddle.prototype = {
   flip(){
     this.sprite.rotationSpeed = this.speed * this.direction;
     this.swinging = true;
-    console.log({
-      action : "flip",
-      rotationSpeed: this.sprite.rotationSpeed,
-      speed: this.speed,
-      rotation: this.sprite.rotation,
-      direction: this.direction,
-    })
+    // console.log({
+    //   action : "flip",
+    //   rotationSpeed: this.sprite.rotationSpeed,
+    //   speed: this.speed,
+    //   rotation: this.sprite.rotation,
+    //   direction: this.direction,
+    // })
   },
 
   back(){
     this.sprite.rotationSpeed = -this.speed * this.direction;
     this.swinging = false;
-    console.log({
-      action: "back",
-      rotationSpeed: this.sprite.rotationSpeed,
-      speed: this.speed,
-      rotation: this.sprite.rotation,
-      direction: this.direction,
-    })
+    // console.log({
+    //   action: "back",
+    //   rotationSpeed: this.sprite.rotationSpeed,
+    //   speed: this.speed,
+    //   rotation: this.sprite.rotation,
+    //   direction: this.direction,
+    // })
   }
 }

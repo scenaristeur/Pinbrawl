@@ -262,7 +262,7 @@ p5.prototype._updateNextTouchCoords = function(e) {
   this._setProperty('touchY', y);
   if (!this._hasTouchInteracted) {
     // For first draw, make previous and next equal
-    this._updateTouchCoords();
+  //  this._updateTouchCoords();
     this._setProperty('_hasTouchInteracted', true);
   }
 };

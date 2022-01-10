@@ -7,6 +7,7 @@ let menu = ["0player", "1player", "2player"]; // "guide"
 let width, height
 let orientation = "portrait"
 let hole = 300
+let device;
 
 function preload() {
   pixelFont = loadFont('assets/joystix monospace.ttf');
@@ -24,22 +25,30 @@ function preload() {
   arrowUpImage = loadImage('assets/arrowUp.png');
   arrowDownImage = loadImage('assets/arrowDown.png');
 
-
   // soundFormats('ogg', 'mp3');
   // song = loadSound('assets/actualrealpinball.mp3');
 }
 
 function setup() {
-  width = 900
-  height = 700
+  let device = getDeviceType()
+  if (device == "mobile") {
+    width = windowWidth //800 // windowWidth
+    height = windowHeight  //450 // windowHeight/2
+  }else{
+    width = 360 //2*windowWidth / 3 //800 // windowWidth
+    height = 560  //450 // windowHeight/2
+  }
+  document.getElementById("debug").innerHTML = device+" "+width+" "+height
+  //width = 900 //windowWidth
+  //height = 700 //windowHeight
   createCanvas(width, height);
 
   state = "2player" //"menu" //used to tell when the game is over
 
   ball = new Ball();
 
-  paddle1 = new Paddle(width/2-hole/4, height-50, 200, 140, -1, 1, -1, true);
-  paddle2 = new Paddle(width/2+hole/4, height-50, -20, 40, 1, 1, 1, true);
+  paddle1 = new Paddle(width/2-hole/4, height-50, 200, 140, -1, 1, -1);
+  paddle2 = new Paddle(width/2+hole/4, height-50, -20, 40, 1, 1, 1);
   // paddle1 = new Paddle(50, 150, -60, -120, -1, 1, -1);
   // paddle2 = new Paddle(50, 300, 60, 120, 1, 1, 1);
   // paddle3 = new Paddle(750, 150, 240, 300, 1, 1, 1);
@@ -55,8 +64,8 @@ function setup() {
     new Wall(width-10, 270, 225, 30, 90),
     new Wall(120, 100, 225, 30, -30),
     new Wall(width-120, 100, 225, 30, 30),
-        new Wall(335, 20, 225, 30, 0),
-          new Wall(width-335, 20, 225, 30, 0),
+    new Wall(335, 20, 225, 30, 0),
+    new Wall(width-335, 20, 225, 30, 0),
 
     // new Wall(108, 400, 225, 30, 60),
     // new Wall(692, 50, 225, 30, 60),
@@ -69,13 +78,13 @@ function setup() {
   obstacles_list = [
     new Obstacle(10, middleCircleImage, "circle", width/2, height/2, 50),
 
-    new Obstacle(5, rectangleBumperImage, "rectangle", 250, 125, 50, 100, 50),
-    new Obstacle(5, rectangleBumperImage, "rectangle", width-250, 125, 50, 100, -50),
-    // new Obstacle(10, middleCircleImage, "circle", 400, 225, 50),
-    new Obstacle(5, smallCircleImage, "circle", 150, 325, 25),
-    new Obstacle(5, smallCircleImage, "circle", width-380, 200, 25),
-    new Obstacle(25, sideCircleImage, "circle", 380, 200, 50),
-    new Obstacle(25, sideCircleImage, "circle", width-150, 325, 50),
+    // new Obstacle(5, rectangleBumperImage, "rectangle", 250, 125, 50, 100, 50),
+    // new Obstacle(5, rectangleBumperImage, "rectangle", width-250, 125, 50, 100, -50),
+    // // new Obstacle(10, middleCircleImage, "circle", 400, 225, 50),
+    // new Obstacle(5, smallCircleImage, "circle", 150, 325, 25),
+    // new Obstacle(5, smallCircleImage, "circle", width-380, 200, 25),
+    // new Obstacle(25, sideCircleImage, "circle", 380, 200, 50),
+    // new Obstacle(25, sideCircleImage, "circle", width-150, 325, 50),
   ];
 
 
@@ -84,6 +93,9 @@ function setup() {
 function draw() {
   // print(state);
   background(bg);
+  let reset = createButton('reset');
+  reset.position(0, 0);
+  reset.mousePressed(resetgame);
 
   if (state != "game over") {
     ball.update();
@@ -287,6 +299,64 @@ function keyReleased() {
   }
 
 }
+
+
+function touchStarted(e) {
+  console.log(e)
+  //  document.getElementById('debug').innerHTML = JSON.stringify(e)
+  let display = touches.length + ' touches';
+  text(display, 5, 10);
+  document.getElementById('debug').innerHTML = frameRate()+"<br>touch<br>"+mouseX+ '<br>'+
+  mouseY+ '<br>'
+  +display
+  +'<br>'+JSON.stringify(touches)
+  if(touches.length ==  1 || touches.length == 2){
+    touches.forEach((t) => {
+      if (t.y > height - 300){
+        if(t.x < width/2){
+          document.getElementById('debug').innerHTML += "left <br>"
+          paddle1.flip()
+        }
+        if (t.x > width/2){
+          document.getElementById('debug').innerHTML += "right <br>"
+          paddle2.flip()
+        }
+      }
+    });
+
+  }
+  //  clickOrTouch(e)
+}
+
+function touchEnded(event) {
+  console.log(event);
+  document.getElementById('debug').innerHTML = frameRate()+"<br>end"+ JSON.stringify(touches)
+  if (touches.length == 0){
+    paddle1.back()
+    paddle2.back()
+  }
+
+  // lag
+  // else if(touches.length ==  1 || touches.length == 2){
+  //   touches.forEach((t) => {
+  //     if (t.y > height - 300){
+  //       if(t.x < width/2){
+  //         document.getElementById('debug').innerHTML += "left <br>"
+  //         paddle1.flip()
+  //       }else{
+  //         paddle1.back()
+  //       }
+  //       if (t.x > width/2){
+  //         document.getElementById('debug').innerHTML += "right <br>"
+  //         paddle2.flip()
+  //       }else{
+  //         paddle2.back()
+  //       }
+  //     }
+  //   })
+  // }
+}
+
 
 function endScreen() {
   textFont(pixelFont, 28);
