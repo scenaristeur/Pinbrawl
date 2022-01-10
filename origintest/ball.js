@@ -1,18 +1,24 @@
 function Ball() {
-  this.sprite = createSprite(width / 2, height / 4);
+  this.sprite = createSprite(width / 2+40, height / 4);
   // this.sprite.draw = function () { ellipse(0, 0, 10, 10); }
   this.sprite.addImage(ballImage);
   this.sprite.setCollider("circle", 0, 0, 8);
   this.sprite.maxSpeed = MAX_SPEED;
   this.sprite.friction = 0.02;
   this.sprite.restitution = 0.4;
-  // this.sprite.debug = true;
+   this.sprite.debug = true;
 
   this.score = 5;
 }
- 
+
 Ball.prototype = {
-  update() {
+
+update(){
+  this.sprite.addSpeed(GRAVITY, 90)
+},
+
+
+  update1() {
     // add gravity
     if (this.sprite.x < width / 2) {
       this.sprite.addSpeed(GRAVITY, 180);
@@ -20,7 +26,7 @@ Ball.prototype = {
     else {
       this.sprite.addSpeed(GRAVITY, 0);
     }
-    
+
     // add score
     if (this.sprite.x > width + 32) {
       leftScore += this.score;
@@ -42,9 +48,10 @@ Ball.prototype = {
   },
 
   reset() {
-    this.sprite.x = width / 2;
+    this.sprite.x = width / 2+40;
     this.sprite.y = height / 4;
     this.sprite.setSpeed(0, 0);
     this.score = 5;
+    console.log("reset", this.sprite)
   }
 }

@@ -7,12 +7,12 @@ function Paddle(x, y, startRotation, swingRotation, direction, mirrorX, mirrorY)
   this.sprite.setCollider("rectangle", 0, 0, 100, 30);
   this.sprite.rotation = startRotation;
   this.sprite.immovable = true;
-  // this.sprite.debug = true;
+  this.sprite.debug = true;
 
   this.detector = createSprite(x, y);
   this.detector.setCollider("circle", 0, 0, 50);
   this.detector.draw = function () { }; // don't draw the detector
-  // this.detector.debug = true;
+  this.detector.debug = true;
 
   this.swingRotation = swingRotation;
   this.startRotation = startRotation;
@@ -65,5 +65,28 @@ Paddle.prototype = {
       this.sprite.rotationSpeed = 2 / 3 * -this.speed * this.direction + 2 * Math.random();
       this.swinging = false;
     }
+  },
+  flip(){
+    this.sprite.rotationSpeed = this.speed * this.direction;
+    this.swinging = true;
+    console.log({
+      action : "flip",
+      rotationSpeed: this.sprite.rotationSpeed,
+      speed: this.speed,
+      rotation: this.sprite.rotation,
+      direction: this.direction,
+    })
+  },
+
+  back(){
+    this.sprite.rotationSpeed = -this.speed * this.direction;
+    this.swinging = false;
+    console.log({
+      action: "back",
+      rotationSpeed: this.sprite.rotationSpeed,
+      speed: this.speed,
+      rotation: this.sprite.rotation,
+      direction: this.direction,
+    })
   }
 }

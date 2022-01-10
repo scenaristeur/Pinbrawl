@@ -3,6 +3,9 @@ let leftScore = 0, rightScore = 0;
 let state;
 let menuSelection = 0;
 let menu = ["0player", "1player", "2player"]; // "guide"
+let width, height
+let orientation = "portrait"
+let hole = 300
 
 function preload() {
   pixelFont = loadFont('assets/joystix monospace.ttf');
@@ -26,36 +29,43 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(450, 700);
+  width = 900
+  height = 700
+  createCanvas(width, height);
 
-  state = "menu" //used to tell when the game is over
+  state = "2player" //"menu" //used to tell when the game is over
 
   ball = new Ball();
 
-  paddle1 = new Paddle(50, 150, -60, -120, -1, 1, -1);
-  paddle2 = new Paddle(50, 300, 60, 120, 1, 1, 1);
-  paddle3 = new Paddle(750, 150, 240, 300, 1, 1, 1);
-  paddle4 = new Paddle(750, 300, -240, -300, -1, 1, -1);
+  paddle1 = new Paddle(width/2-hole/4, height-50, 180, 240, 1, 1, -1, true);
+  paddle2 = new Paddle(width/2+hole/4, height-50, 0, 60, 1, 1, 1, true);
+  // paddle1 = new Paddle(50, 150, -60, -120, -1, 1, -1);
+  // paddle2 = new Paddle(50, 300, 60, 120, 1, 1, 1);
+  // paddle3 = new Paddle(750, 150, 240, 300, 1, 1, 1);
+  // paddle4 = new Paddle(750, 300, -240, -300, -1, 1, -1);
 
   walls = new Group();
   walls_list = [
-    new Wall(108, 50, 225, 30, -60),
-    new Wall(108, 400, 225, 30, 60),
-    new Wall(692, 50, 225, 30, 60),
-    new Wall(692, 400, 225, 30, -60),
-    new Wall(width / 2, -25, width, 50, 0),
-    new Wall(width / 2, height + 25, width, 50, 0),
+    new Wall(width/2+hole/2+60, height-100, 225, 30, -20),
+    new Wall(width/2-hole/2-60, height-100, 225, 30, 20),
+    new Wall(3*width/4+hole/2, height-225, 225, 30, -40),
+    new Wall(width/4-hole/2, height-225, 225, 30, 40),
+    // new Wall(108, 400, 225, 30, 60),
+    // new Wall(692, 50, 225, 30, 60),
+    // new Wall(692, 400, 225, 30, -60),
+    // new Wall(width / 2, -25, width, 50, 0),
+    // new Wall(width / 2, height + 25, width, 50, 0),
   ]
 
   obstacles = new Group();
   obstacles_list = [
-    new Obstacle(5, rectangleBumperImage, "rectangle", 250, 125, 50, 100, 50),
-    new Obstacle(5, rectangleBumperImage, "rectangle", 550, 325, 50, 100, 50),
-    new Obstacle(10, middleCircleImage, "circle", 400, 225, 50),
-    new Obstacle(5, smallCircleImage, "circle", 250, 325, 25),
-    new Obstacle(5, smallCircleImage, "circle", 550, 125, 25),
-    new Obstacle(25, sideCircleImage, "circle", 400, -10, 50),
-    new Obstacle(25, sideCircleImage, "circle", 400, 460, 50),
+    // new Obstacle(5, rectangleBumperImage, "rectangle", 250, 125, 50, 100, 50),
+    // new Obstacle(5, rectangleBumperImage, "rectangle", 550, 325, 50, 100, 50),
+    // new Obstacle(10, middleCircleImage, "circle", 400, 225, 50),
+    // new Obstacle(5, smallCircleImage, "circle", 250, 325, 25),
+    // new Obstacle(5, smallCircleImage, "circle", 550, 125, 25),
+    // new Obstacle(25, sideCircleImage, "circle", 400, -10, 50),
+    // new Obstacle(25, sideCircleImage, "circle", 400, 460, 50),
   ];
 
 
@@ -65,12 +75,26 @@ function draw() {
   // print(state);
   background(bg);
 
+  if (state != "game over") {
+    ball.update();
+  }
+
+  // bot controls
+  if (state == "0player" || state == "menu") {
+    // bots play vs. each other
+    paddle1.bot();
+    paddle2.bot();
+  }
+  if (state == "1player" || state == "0player" || state == "menu") {
+    // paddle3.bot();
+    // paddle4.bot();
+  }
 
   if (state != "game over") {
     paddle1.update();
     paddle2.update();
-    paddle3.update();
-    paddle4.update();
+    // paddle3.update();
+    // paddle4.update();
 
     ball.sprite.bounce(walls);
 
@@ -127,6 +151,12 @@ function draw() {
     // image(arrowUpImage, 580, 187);
     // image(arrowDownImage, 580, 287);
   }
+  if (state != "game over" && state != "menu" && (leftScore >= 999) || (rightScore >= 999)) {
+    state = "game over";
+  }
+  if (state == "game over") {
+    endScreen();
+  }
 
 }
 
@@ -144,4 +174,133 @@ function onePlayer(){
 function twoPlayers(){
   console.log("two")
   state = "2player"
+}
+
+function keyPressed() {
+  console.log(key)
+  if (key == 'a' || key == 'w') {
+    if (state == "2player" || state == "1player") {
+        paddle1.flip()
+    }
+    if (state == "menu") {
+      menuSelection--;
+      if (menuSelection < 0) {
+        menuSelection = menu.length - 1;
+      }
+    }
+  }
+  if (key == 'z' || key == 's' || key == 'd') {
+    if (state == "2player" || state == "1player") {
+      paddle2.flip()
+    }
+    if (state == "menu") {
+      menuSelection++;
+      if (menuSelection > menu.length - 1) {
+        menuSelection = 0;
+      }
+    }
+  }
+  if (key == 'k' || keyCode == LEFT_ARROW || keyCode == UP_ARROW) {
+    if (state == "2player") {
+      paddle3.sprite.rotationSpeed = paddle3.speed * paddle3.direction;
+      paddle3.swinging = true;
+    }
+    if (state == "1player") {
+      paddle1.flip()
+    }
+    if (state == "menu") {
+      menuSelection--;
+      if (menuSelection < 0) {
+        menuSelection = menu.length - 1;
+      }
+    }
+  }
+  if (key == 'm' || keyCode == RIGHT_ARROW || keyCode == DOWN_ARROW) {
+    if (state == "2player") {
+      paddle4.sprite.rotationSpeed = paddle4.speed * paddle4.direction;
+      paddle4.swinging = true;
+    }
+    if (state == "1player") {
+      paddle2.flip()
+    }
+    if (state == "menu") {
+      menuSelection++;
+      if (menuSelection > menu.length - 1) {
+        menuSelection = 0;
+      }
+    }
+  }
+  if (keyCode == ENTER) {
+    // change game state based on menu selection
+    if (state == "menu") {
+      state = menu[menuSelection];
+      resetgame();
+    }
+    if (state == "game over") {
+      state = "menu";
+      resetgame();
+    }
+  }
+    if(key == 'r'){
+      resetgame()
+    }
+}
+
+function keyReleased() {
+  if (key == 'a' || key == 'w') {
+    if (state == "2player" || state == "1player") {
+      paddle1.back()
+    }
+  }
+  if (key == 'z' || key == 's' || key == 'd') {
+    if (state == "2player" || state == "1player") {
+      paddle2.back()
+    }
+  }
+  if (key == 'k' || keyCode == LEFT_ARROW || keyCode == UP_ARROW) {
+    if (state == "2player") {
+      paddle3.sprite.rotationSpeed = -paddle3.speed * paddle3.direction;
+      paddle3.swinging = false;
+    }
+    if (state == "1player") {
+      paddle1.back()
+    }
+  }
+  if (key == 'm' || keyCode == RIGHT_ARROW || keyCode == DOWN_ARROW) {
+    if (state == "2player") {
+      paddle4.sprite.rotationSpeed = -paddle4.speed * paddle4.direction;
+      paddle4.swinging = false;
+    }
+    if (state == "1player") {
+      paddle2.back()
+    }
+  }
+
+}
+
+function endScreen() {
+  textFont(pixelFont, 28);
+  textAlign(CENTER, CENTER);
+  fill(254, 205, 26);
+  if (leftScore >= 999) {
+    background(endScreenImage1);
+    if (state == "1player") {
+      text("You win! Great Job!", 20, 10, 800, 90)
+    }
+  } else if (rightScore >= 999) {
+    background(endScreenImage2);
+    if (state == "1player") {
+      text("The AI won! Nice Try!", 20, 10, 800, 90)
+    }
+  }
+  text("Press ENTER to restart.", 20, 80, 800, 600)
+}
+
+function resetgame() {
+  console.log("reset")
+  leftScore = 0;
+  rightScore = 0;
+  menuSelection = 0;
+  background(bg);
+  ball.reset(); // doesn't work TODO make ball reset
 }

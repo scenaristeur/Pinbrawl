@@ -6,5 +6,5 @@ function Wall(x, y, w, h, r) {
   this.sprite.rotation = r;
   this.sprite.immovable = true;
   walls.add(this.sprite);
+  this.sprite.debug = true;
 }
-
