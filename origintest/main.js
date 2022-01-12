@@ -9,6 +9,7 @@ let orientation = "portrait"
 let hole = 300
 let device;
 
+
 function preload() {
   pixelFont = loadFont('assets/joystix monospace.ttf');
   bg = loadImage('assets/background.png');
@@ -179,6 +180,7 @@ function draw() {
   if (state == "game over") {
     endScreen();
   }
+  document.getElementById('framerate').innerHTML = Math.round(frameRate())
 
 }
 
@@ -306,7 +308,7 @@ function touchStarted(e) {
   //  document.getElementById('debug').innerHTML = JSON.stringify(e)
   let display = touches.length + ' touches';
   text(display, 5, 10);
-  document.getElementById('debug').innerHTML = frameRate()+"<br>touch<br>"+mouseX+ '<br>'+
+  document.getElementById('debug').innerHTML = "touch<br>"+mouseX+ '<br>'+
   mouseY+ '<br>'
   +display
   +'<br>'+JSON.stringify(touches)
@@ -330,7 +332,7 @@ function touchStarted(e) {
 
 function touchEnded(event) {
   console.log(event);
-  document.getElementById('debug').innerHTML = frameRate()+"<br>end"+ JSON.stringify(touches)
+  document.getElementById('debug').innerHTML = "end"+ JSON.stringify(touches)
   if (touches.length == 0){
     paddle1.back()
     paddle2.back()
